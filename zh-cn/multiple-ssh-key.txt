@@ -1,0 +1,64 @@
+github多账号管理
+环境:
+account1
+name:a1
+email:a1@gmail.com
+
+account2
+name:a2
+email:a2@gmail.com
+
+1.生成私钥
+ssh-gen -t rsa -f ~/.ssh/id_rsa_a1 -C "a1@gmail.com"
+ssh-gen -t rsa -f ~/.ssh/id_rsa_a2 -C "a2@gmail.com"
+在~/.ssh下回生成四个文件
+id_rsa_a1
+id_rsa_a1.pub
+id_rsa_a2
+id_rsa_a2.pub
+
+2.启动ssh-agent
+eval "$(ssh-agent -s)"
+
+3.将私钥添加入ssh-agent
+Mac下可以使用
+ssh-add -K ~/.ssh/id_rsa_a1
+ssh-add -K ~/.ssh/id_rsa_a2
+将私钥加入到keychain中
+
+linux下使用
+ssh-add  ~/.ssh/id_rsa_a1
+ssh-add  ~/.ssh/id_rsa_a2
+
+4.配置config
+在~/.ssh中新建config文件，内容如下:
+
+#account1
+Host github_a1
+HostName github.com
+User a1
+PreferredAuthentications publickey
+IdentityFile ~/.ssh/id_rsa_a1
+
+#account2
+Host github_a2
+HostName github.com
+User a2
+PreferredAuthentications publickey
+IdentityFile ~/.ssh/id_rsa_a2
+
+注意:Host为别名，HostName才是真实主机
+
+5.将pub结尾的文件加入github个人设置的sshkey中
+https://help.github.com/articles/generating-ssh-keys/#platform-mac
+
+6.
+添加a1账户下的仓库
+git remote add origin git@github_a1:a1/test.git
+添加a2账户下的仓库
+git remote add origin git@github_a2:a2/test.git
+注:
+地址中的github_a1就是config文件中的Host,a1就是账号,这样绑定后，就可以正常push&pull。
+如果错误爆出，使用
+ssh-add  ~/.ssh/id_rsa_a1
+mac下添加到keychain后，不需要每次git push前使用ssh-add添加私钥
