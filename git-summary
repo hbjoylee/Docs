@@ -1,0 +1,34 @@
+合并分支:
+合并分支时，加上--no-ff参数就可以用普通模式合并，合并后的历史有分支，能看出来曾经做过合并，
+而fast forward合并就看不出来曾经做过合并。
+example
+git merge --no-ff -m "merge with no-ff" dev
+因为使用--no-ff 会产生新commit所以需要加上-m描述commit
+
+远程:
+本地新建的分支如果不推送到远程，对其他人就是不可见的；
+从本地推送分支，使用git push origin branch-name，如果推送失败，先用git pull抓取远程的新提交；
+
+git checkout -b dev origin/dev
+本地没有dev分支，将远程dev分支创建到本地
+
+git push origin dev
+将本地dev分支推送到远程
+
+git branch --set-upstream dev origin/dev
+将本地dev与远程dev绑定
+
+标签:
+git tag v1.0 d167cde
+git tag -a v1.0 -m "version 1.0" d167cde
+git tag -d v1.0
+创建的标签都只存储在本地，不会自动推送到远程。所以，打错的标签可以在本地安全删除。
+git push origin v1.0 推送v1.0 tag到远程
+git push origin --tags 推送所有未同步的tag
+
+删除tag
+git tag -d v1.0
+git push origin :refs/tags/v1.0
+
+忽略文件
+https://github.com/github/gitignore
